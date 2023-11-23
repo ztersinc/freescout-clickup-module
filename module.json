@@ -1,0 +1,24 @@
+{
+    "name": "Clickup Integration",
+    "alias": "clickupintegration",
+    "img": "https://app-cdn.clickup.com/clickup-symbol_color.6c3fc778987344003164b4b4c9826eb8.svg",
+    "IMG_REVIEW": "/modules/clickupintegration/img/clickup-logo.png",
+    "description": "Connect FreeScout to ClickUp!",
+    "version": "1.0.0",
+    "detailsUrl": "",
+    "author": "",
+    "authorUrl": "",
+    "requiredAppVersion": "1.0.2",
+    "license": "AGPL-3.0",
+    "keywords": [],
+    "active": 0,
+    "order": 0,
+    "providers": [
+        "Modules\\ClickupIntegration\\Providers\\ClickupIntegrationServiceProvider"
+    ],
+    "aliases": {},
+    "files": [
+        "start.php"
+    ],
+    "requires": []
+}
