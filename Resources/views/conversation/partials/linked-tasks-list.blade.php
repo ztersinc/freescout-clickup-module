@@ -1,9 +1,9 @@
 @if(count($tasks))
     <ul class="sidebar-block-list">
         @foreach ($tasks as $task)
-            <li>
-                <div style="display: flex;">
-                    <div style="width: 95%; overflow-wrap: anywhere;">
+            <li class="clickup-task-list-item">
+                <div>
+                    <div class="clickup-task-list-item-name">
                         <a href="{{ $task->getCustomUrl() }}" target="_blank">
                             <i class="glyphicon glyphicon-chevron-right"></i>
                             {{ $task->name }}
@@ -12,7 +12,7 @@
                             </span>
                         </a>
                     </div>
-                    <span style="padding: 0 5px">
+                    <span class="clickup-task-list-item-unlink">
                         <a href="#" class="clickup-unlink-task" data-task-id="{{ $task->id }}">
                             <strong>X</strong>
                         </a>

@@ -1,0 +1,52 @@
+@-webkit-keyframes rotate360 {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.rotating {
+    animation: rotate360 2s linear infinite;
+}
+
+#clickup-sidebar .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    background-color: rgba(0,0,0,0.2);
+    color: black;
+    width: 260px;
+    left: 0px;
+    height: 100%;
+    z-index: 1;
+}
+
+#clickup-sidebar .loader > div {
+    margin: 10px; font-size: 25px;
+}
+
+#clickup-sidebar .loader.d-none {
+    display: none;
+}
+
+#clickup-task-list-container {
+    position: relative;
+}
+
+.clickup-task-list-items-container {
+    display: flex;
+    justify-content: center;
+}
+
+.clickup-task-list-item > div {
+    display: flex;
+    align-items: baseline;
+}
+
+.clickup-task-list-item-name {
+    width: 95%;
+    overflow-wrap: anywhere;
+}
+
+.clickup-task-list-item-unlink {
+    padding: 0 5px
+}

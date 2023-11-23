@@ -3,9 +3,9 @@
 namespace Modules\ClickupIntegration\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Factory;
 use Modules\ClickupIntegration\Providers\Traits\IntegrationFields;
 use Eventy;
+use Module;
 use Option;
 use View;
 
@@ -44,8 +44,6 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
     {
         $this->registerConfig();
         $this->registerViews();
-        $this->registerFactories();
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
         $this->hooks();
     }
 
@@ -92,30 +90,32 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
         /**
          * Action that is executed once a conversation is open (Not draft) to show the Linking integration
          */
-        Eventy::addAction('conversation.after_prev_convs', function($customer, $conversation, $mailbox) {
+        Eventy::addAction('conversation.after_prev_convs', function($customer, $conversation) {
             // Skip if no customer (e.g. a draft email)
             if (empty($customer)) {
                 return;
             }
 
             echo View::make(self::MODULE_NAME . '::conversation/sidebar', [
-                'routes' => [
-                    'linked_tasks' => route('clickup.linked_tasks', $conversation->id),
-                    'link_tasks' => route('clickup.link_tasks', $conversation->id),
-                    'unlink_task' => route('clickup.unlink_task'),
-                ],
+                'conversation' => $conversation
             ])->render();
         }, -1, 3);
-    }
 
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->registerTranslations();
+        // /**
+        //  * Add module's css file to the application
+        //  */
+        // Eventy::addFilter('stylesheets', function(array $styles) {
+        //     $styles[] = Module::getPublicPath(self::MODULE_NAME).'/css/module.css';
+        //     return $styles;
+        // });
+
+        // /**
+        //  * Add module's JS file to the application
+        //  */
+        // Eventy::addFilter('javascripts', function(array $javascripts) {
+        //     $javascripts[] = \Module::getPublicPath(self::MODULE_NAME).'/js/module.js';
+        //     return $javascripts;
+        // });
     }
 
     /**
@@ -151,27 +151,6 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
         $this->loadViewsFrom(array_merge(array_map(function ($path) {
             return $path . '/modules/clickupintegration';
         }, \Config::get('view.paths')), [$sourcePath]), 'clickupintegration');
-    }
-
-    /**
-     * Register translations.
-     *
-     * @return void
-     */
-    public function registerTranslations()
-    {
-        $this->loadJsonTranslationsFrom(__DIR__ .'/../Resources/lang');
-    }
-
-    /**
-     * Register an additional directory of factories.
-     * @source https://github.com/sebastiaanluca/laravel-resource-flow/blob/develop/src/Modules/ModuleServiceProvider.php#L66
-     */
-    public function registerFactories()
-    {
-        if (! app()->environment('production')) {
-            app(Factory::class)->load(__DIR__ . '/../Database/factories');
-        }
     }
 
     /**

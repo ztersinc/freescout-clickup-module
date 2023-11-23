@@ -2,7 +2,13 @@
 
 Route::group(['middleware' => 'web', 'prefix' => \Helper::getSubdirectory(), 'namespace' => 'Modules\ClickupIntegration\Http\Controllers'], function()
 {
-    Route::get('/clickup/linked_tasks/{conversationId}', 'ClickupIntegrationController@linkedTasks')->name('clickup.linked_tasks');
-    Route::get('/clickup/link_tasks/{conversationId}', 'ClickupIntegrationController@linkTasks')->name('clickup.link_tasks');
-    Route::delete('/clickup/unlink_task', 'ClickupIntegrationController@unlinkTask')->name('clickup.unlink_task');
+    Route::group(['prefix' => 'clickup/tasks'], function()
+    {
+        // Sidebar List and Unlink
+        Route::get('linked/{conversationId}', 'ClickupIntegrationController@linkedTasks')->name('clickup.tasks.linked');
+        Route::delete('unlink', 'ClickupIntegrationController@unlinkTask')->name('clickup.tasks.unlink');
+
+        // Modal HTML, Search and Add
+        Route::get('link-modal/{conversationId}', 'ClickupIntegrationController@linkTasks')->name('clickup.tasks.link-modal');
+    });
 });

@@ -13,27 +13,16 @@ use Validator;
 class ClickupIntegrationController extends Controller
 {
     /**
-     * HTML - Returns a list of linked tasks for the $conversationId
+     * Returns a list of linked tasks for the $conversationId
      *
      * @param string $conversationId
      * @return Response
      */
     public function linkedTasks(ClickupService $service, $conversationId)
     {
-        return view(Provider::MODULE_NAME . '::conversation.partials.linked_tasks', [
+        return view(Provider::MODULE_NAME . '::conversation.partials.linked-tasks-list', [
             'tasks' => $service->getLinkedTasks($conversationId)
         ]);
-    }
-
-    /**
-     * HTML - Returns the modal to link a new Task to the conversation
-     *
-     * @param string $conversationId
-     * @return Response
-     */
-    public function linkTasks(ClickupService $service, $conversationId)
-    {
-        return view(Provider::MODULE_NAME . '::conversation.partials.link_tasks', compact('conversationId'));
     }
 
     /**
@@ -55,5 +44,16 @@ class ClickupIntegrationController extends Controller
         } else {
             $service->unlinkTask($request->task_id);
         }
+    }
+
+    /**
+     * Returns the modal to link a new Task to the conversation
+     *
+     * @param string $conversationId
+     * @return Response
+     */
+    public function linkTasks(ClickupService $service, $conversationId)
+    {
+        return view(Provider::MODULE_NAME . '::conversation.partials.link-tasks-modal', compact('conversationId'));
     }
 }
