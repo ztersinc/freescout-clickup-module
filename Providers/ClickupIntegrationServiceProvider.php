@@ -18,6 +18,15 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
     public const SECTION_NAME = 'clickup';
 
     /**
+     * Thread action types
+     */
+    const ACTION_TYPE_TASK_LINKED = 100;
+
+    private $action_types = [
+        self::ACTION_TYPE_TASK_LINKED => 'clickup-task-linked'
+    ];
+
+    /**
      * Indicates if loading of the provider is deferred.
      *
      * @var bool
@@ -88,6 +97,24 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
         }, 10, 2);
 
         /**
+         * Filter that registers new action types (Notes that are added to thread conversations)
+         */
+        Eventy::addFilter('thread.action_types', function(array $action_types) {
+            $action_types[self::ACTION_TYPE_TASK_LINKED] = $this->action_types[self::ACTION_TYPE_TASK_LINKED];
+            return $action_types;
+        }, 10);
+
+        /**
+         * Filter that translated a note based on the custom types added
+         */
+        Eventy::addFilter('thread.action_text', function($actionText, $thread) {
+            if ($thread->action_type === self::ACTION_TYPE_TASK_LINKED) {
+                $actionText = $thread->body;
+            }
+            return $actionText;
+        }, 10, 2);
+
+        /**
          * Action that is executed once a conversation is open (Not draft) to show the Linking integration
          */
         Eventy::addAction('conversation.after_prev_convs', function($customer, $conversation) {
@@ -100,22 +127,6 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
                 'conversation' => $conversation
             ])->render();
         }, -1, 3);
-
-        // /**
-        //  * Add module's css file to the application
-        //  */
-        // Eventy::addFilter('stylesheets', function(array $styles) {
-        //     $styles[] = Module::getPublicPath(self::MODULE_NAME).'/css/module.css';
-        //     return $styles;
-        // });
-
-        // /**
-        //  * Add module's JS file to the application
-        //  */
-        // Eventy::addFilter('javascripts', function(array $javascripts) {
-        //     $javascripts[] = \Module::getPublicPath(self::MODULE_NAME).'/js/module.js';
-        //     return $javascripts;
-        // });
     }
 
     /**

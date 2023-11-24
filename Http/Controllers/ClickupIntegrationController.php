@@ -2,7 +2,8 @@
 
 namespace Modules\ClickupIntegration\Http\Controllers;
 
-
+use App\Thread;
+use App\Conversation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -20,6 +21,21 @@ class ClickupIntegrationController extends Controller
      */
     public function linkedTasks(ClickupService $service, $conversationId)
     {
+        // $conversation = Conversation::find($conversationId);
+        // $thread = new Thread;
+        // $thread->conversation_id = $conversation->id;
+        // $thread->user_id = $conversation->user_id;
+        // $thread->body = 'ClickUp Task linked: <a href="https://app.clickup.com/t/14312548/DIGDEV-10144" target="_blank">https://app.clickup.com/t/14312548/DIGDEV-10144</a>';
+        // $thread->type = Thread::TYPE_LINEITEM;
+        // $thread->state = Thread::STATE_PUBLISHED;
+        // $thread->status = Thread::STATUS_NOCHANGE;
+        // $thread->action_type = Provider::ACTION_TYPE_TASK_LINKED;
+        // $thread->source_via = Thread::PERSON_USER;
+        // $thread->source_type = Thread::SOURCE_TYPE_WEB;
+        // $thread->customer_id = $conversation->customer_id;
+        // $thread->created_by_user_id = $conversation->user_id;
+        // $thread->save();
+
         return view(Provider::MODULE_NAME . '::conversation.partials.linked-tasks-list', [
             'tasks' => $service->getLinkedTasks($conversationId)
         ]);
