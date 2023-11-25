@@ -5,7 +5,7 @@ namespace Modules\ClickupIntegration\Providers;
 use Illuminate\Support\ServiceProvider;
 use Modules\ClickupIntegration\Providers\Traits\IntegrationFields;
 use Eventy;
-use Module;
+use Modules\ClickupIntegration\Services\ClickupService;
 use Option;
 use View;
 
@@ -75,12 +75,18 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
          */
         Eventy::addFilter('settings.section_settings', function($settings, $section) {
             if ($section === self::SECTION_NAME) {
+                $clickupService = new ClickupService();
+
                 $settings = Option::getOptions([
                     self::MODULE_FIELDS[self::FIELD_API_TOKEN],
                     self::MODULE_FIELDS[self::FIELD_ENVIRONMENT],
+                    self::MODULE_FIELDS[self::FIELD_TEAM_ID],
                     self::MODULE_FIELDS[self::FIELD_LIST_ID],
                     self::MODULE_FIELDS[self::FIELD_LINK_ID],
                     self::MODULE_FIELDS[self::FIELD_LINK_URL],
+                    'integration_status'
+                ], [
+                    'integration_status' => $clickupService->isAuthorized()
                 ]);
             }
             return $settings;

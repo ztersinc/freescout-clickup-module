@@ -36,9 +36,10 @@ class ClickupIntegrationController extends Controller
         // $thread->created_by_user_id = $conversation->user_id;
         // $thread->save();
 
-        return view(Provider::MODULE_NAME . '::conversation.partials.linked-tasks-list', [
-            'tasks' => $service->getLinkedTasks($conversationId)
-        ]);
+        return view(
+            Provider::MODULE_NAME . '::conversation.partials.linked-tasks-list',
+            $service->getLinkedTasks($conversationId)
+        );
     }
 
     /**

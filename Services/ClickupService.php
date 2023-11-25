@@ -4,8 +4,9 @@ namespace Modules\ClickupIntegration\Services;
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Modules\ClickupIntegration\Providers\ClickupIntegrationServiceProvider as Provider;
-use ClickUpClient\Client;
 use Modules\ClickupIntegration\Entities\Task;
+use ClickUpClient\Client;
+use Exception;
 
 class ClickupService
 {
@@ -28,31 +29,65 @@ class ClickupService
         // ]);
     }
 
+    public function isAuthorized()
+    {
+        $isAuthorized = true;
+
+        try {
+            $this->client->get("user");
+        } catch (Exception) {
+            $isAuthorized = false;
+        }
+
+        return $isAuthorized;
+    }
+
     /**
-     * Returns a list of linked tasks for the environment-conversationId combination
+     * Returns a partial error to be displayed in UI
+     *
+     * @param string $error
+     * @return string
+     */
+    private function getPartialError($error)
+    {
+        return substr($error, strpos($error, 'response'));
+    }
+
+    /**
+     * Returns an array of linked tasks for the environment-conversationId
      *
      * @param int $conversationId
-     *
-     * @return
+     * @return array ['tasks' => [Task::class], 'error' => string]
      */
     public function getLinkedTasks($conversationId)
     {
+        $response = [
+            'tasks' => [],
+            'error' => false
+        ];
+
         $environment = Provider::getEnvironment();
         $listId = Provider::getListId();
         $linkId = Provider::getLinkId();
 
-        $response = $this->client->get("list/{$listId}/task", [
-            'custom_fields' => json_encode([
-                [
-                    'field_id'  => $linkId,
-                    'operator'  => '=',
-                    'value'     => "{$environment}-{$conversationId}"
-                ]
-            ])
-        ]);
+        try {
+            $data = $this->client->get("list/{$listId}/task", [
+                'custom_fields' => json_encode([
+                    [
+                        'field_id'  => $linkId,
+                        'operator'  => '=',
+                        'value'     => "{$environment}-{$conversationId}"
+                    ]
+                ])
+            ]);
 
-        $tasks = $response['tasks'] ?? [];
-        return array_map([Task::class, 'hydrate'], $tasks);
+            $tasks = $data['tasks'] ?? [];
+            $response['tasks'] = array_map([Task::class, 'hydrate'], $tasks);
+        } catch (Exception $e) {
+            $response['error'] = $this->getPartialError($e->getMessage());
+        }
+
+        return $response;
     }
 
     /**
@@ -63,11 +98,8 @@ class ClickupService
      */
     public function unlinkTask($taskId)
     {
-        $linkId = Provider::getLinkId();
-        $linkUrl = Provider::getLinkURL();
-
         $task = $this->client->task($taskId);
-        $task->deleteCustomField($linkId);
-        $task->deleteCustomField($linkUrl);
+        $task->deleteCustomField(Provider::getLinkId());
+        $task->deleteCustomField(Provider::getLinkURL());
     }
 }

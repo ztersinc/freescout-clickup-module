@@ -26,7 +26,7 @@
                             data-trigger="modal"
                             data-modal-title="{{ __("Link ClickUp Tasks") }}"
                             data-modal-no-footer="true"
-                            data-modal-on-show=""
+                            data-modal-on-show="initializeModalJS"
                             role="button"
                         >
                             <i class="glyphicon glyphicon-link"></i>

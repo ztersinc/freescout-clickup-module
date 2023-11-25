@@ -8,8 +8,15 @@
         <label for="integration_status" class="col-sm-2 control-label">{{ __('Integration Status') }}</label>
 
         <div class="col-sm-6">
-            <i class="glyphicon glyphicon-check"></i>
-            <i class="glyphicon glyphicon-times"></i>
+            @if ($settings['integration_status'])
+                <div class="text-success">
+                    <i class="glyphicon glyphicon-ok"></i> <strong>Active</strong>
+                </div>
+            @else
+                <div class="text-danger">
+                    <i class="glyphicon glyphicon-remove"></i> <strong>Inactive</strong>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -46,9 +53,23 @@
 
     <h3 class="subheader">{{ __('Linking Configuration') }}</h3>
 
+    <!-- Team ID -->
+    <div class="form-group{{ $errors->has('settings[clickupintegration.team_id]') ? ' has-error' : '' }}">
+        <label for="team_id" class="col-sm-2 control-label">{{ __('Team id') }}</label>
+
+        <div class="col-sm-6">
+            <input id="team_id" type="text" class="form-control input-sized" name="settings[clickupintegration.team_id]" value="{{ old('settings[clickupintegration.team_id]', $settings['clickupintegration.team_id']) }}" maxlength="60" required>
+            <div class="form-help">
+                Team ID in ClickUp
+            </div>
+
+            @include('partials/field_error', ['field'=>'settings[clickupintegration.team_id]'])
+        </div>
+    </div>
+
     <!-- List ID -->
     <div class="form-group{{ $errors->has('settings[clickupintegration.list_id]') ? ' has-error' : '' }}">
-        <label for="list_id" class="col-sm-2 control-label">{{ __('List ID') }}</label>
+        <label for="list_id" class="col-sm-2 control-label">{{ __('List id') }}</label>
 
         <div class="col-sm-6">
             <input id="list_id" type="text" class="form-control input-sized" name="settings[clickupintegration.list_id]" value="{{ old('settings[clickupintegration.list_id]', $settings['clickupintegration.list_id']) }}" maxlength="60" required>

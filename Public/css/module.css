@@ -7,6 +7,12 @@
     animation: rotate360 2s linear infinite;
 }
 
+.d-none {
+    display: none !important;
+}
+
+/* Sidebar */
+
 #clickup-sidebar .loader {
     display: flex;
     justify-content: center;
@@ -22,10 +28,6 @@
 
 #clickup-sidebar .loader > div {
     margin: 10px; font-size: 25px;
-}
-
-#clickup-sidebar .loader.d-none {
-    display: none;
 }
 
 #clickup-task-list-container {
@@ -49,4 +51,9 @@
 
 .clickup-task-list-item-unlink {
     padding: 0 5px
+}
+
+/* Modal */
+.clickup-modal-content {
+    padding: 15px;
 }

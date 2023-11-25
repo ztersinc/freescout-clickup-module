@@ -46,4 +46,29 @@ $(document).ready(function() {
 
     // OnLoad actions
     refreshLinkedTasks();
+
+    // MODAL JS (Executed when modal is opened)
+    initializeModalJS = () => {
+        const $ref = $('#clickup-link-tasks-modal')
+        // Tabs
+        const $tabSearch = $ref.find('#clickup-tab-search')
+        const $tabNew = $ref.find('#clickup-tab-new')
+        // Tabs Content
+        const $tabContentSearch = $ref.find('#tab-content-search')
+        const $tabContentNew = $ref.find('#tab-content-new')
+
+        $tabSearch.on('click', () => {
+            $tabNew.removeClass('active')
+            $tabSearch.addClass('active')
+            $tabContentSearch.removeClass('d-none')
+            $tabContentNew.addClass('d-none')
+        })
+
+        $tabNew.on('click', () => {
+            $tabSearch.removeClass('active')
+            $tabNew.addClass('active')
+            $tabContentNew.removeClass('d-none')
+            $tabContentSearch.addClass('d-none')
+        })
+    }
 });

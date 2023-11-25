@@ -1,4 +1,14 @@
-@if(count($tasks))
+@if($error)
+    <div>
+        <span class="text-danger">
+            A ClickUp error has occured:
+        </span>
+        <br />
+        <span class="text-warning">
+            {{ $error }}
+        </span>
+    </div>
+@elseif(count($tasks))
     <ul class="sidebar-block-list">
         @foreach ($tasks as $task)
             <li class="clickup-task-list-item">
