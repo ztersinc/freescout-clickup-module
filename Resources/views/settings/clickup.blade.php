@@ -45,7 +45,7 @@
                 <option value="prod" {{ $settings['clickupintegration.environment'] === 'prod' ? 'selected' : '' }}>Production</option>
             </select>
             <div class="form-help">
-                The selected environment will be used to prefix the conversation id to be assigned to the "FreeScout ID" custom field in a ClickUp task.
+                The selected environment will be used to prefix the "FreeScout ID" custom field in a ClickUp task. example: (dev-1, uat-1, prod-1)
             </div>
             @include('partials/field_error', ['field'=>'settings[clickupintegration.environment]'])
         </div>

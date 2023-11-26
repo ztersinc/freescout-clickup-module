@@ -6,6 +6,7 @@ Route::group(['middleware' => 'web', 'prefix' => \Helper::getSubdirectory(), 'na
     {
         // Sidebar List and Unlink
         Route::get('linked/{conversationId}', 'ClickupIntegrationController@linkedTasks')->name('clickup.tasks.linked');
+        Route::post('link', 'ClickupIntegrationController@linkTask')->name('clickup.tasks.link');
         Route::delete('unlink', 'ClickupIntegrationController@unlinkTask')->name('clickup.tasks.unlink');
 
         // Modal HTML, Search and Add

@@ -4,7 +4,7 @@ namespace Modules\ClickupIntegration\Entities;
 
 use Modules\ClickupIntegration\Providers\ClickupIntegrationServiceProvider as Provider;
 
-class Task implements HydratableInterface
+class Task
 {
     public string $id;
     public string $custom_id;

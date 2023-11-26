@@ -41,7 +41,7 @@
 
 .clickup-task-list-item > div {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
 }
 
 .clickup-task-list-item-name {

@@ -47,8 +47,10 @@
 @section('javascripts')
     @parent
     <script type="text/javascript" {!! \Helper::cspNonceAttr() !!}>
+        window.CSRF_TOKEN = "{{ csrf_token() }}"
         window.CLICKUP_ROUTES = {
             TASK_LINKED: '{{ route('clickup.tasks.linked', $conversation->id) }}',
+            TASK_LINK: '{{ route('clickup.tasks.link') }}',
             TASK_UNLINK: '{{ route('clickup.tasks.unlink') }}'
         }
     </script>

@@ -93,6 +93,44 @@ class ClickupService
     /**
      * Updates the custom field ($linkId and $linkUrl) from the Task
      *
+     * @param int $conversationId
+     * @param string $taskUrlId
+     * @return ['task' => Task::class, 'error' => string]
+     */
+    public function linkTask($conversationId, $taskUrlId)
+    {
+        $response = [
+            'task' => false,
+            'error' => false
+        ];
+
+        try {
+            $customTaskId = basename($taskUrlId);
+            $task = $this->client->get("task/{$customTaskId}", [
+                'custom_task_ids' => "true",
+                'team_id' => Provider::getTeamId(),
+            ]);
+
+            if ($task) {
+                $environment = Provider::getEnvironment();
+                $taskId = $task['id'];
+                $this->client->task($taskId)->setCustomField(Provider::getLinkId(), "{$environment}-{$conversationId}");
+                $this->client->task($taskId)->setCustomField(Provider::getLinkURL(), route('conversations.view', $conversationId));
+
+                $response['task'] = Task::hydrate($task);
+            } else {
+                $response['error'] = 'Task not found';
+            }
+        } catch (Exception $e) {
+            $response['error'] = $this->getPartialError($e->getMessage());
+        }
+
+        return $response;
+    }
+
+    /**
+     * Updates the custom field ($linkId and $linkUrl) from the Task
+     *
      * @param string $taskId
      * @return void
      */

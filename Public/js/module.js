@@ -1,12 +1,19 @@
 $(document).ready(function() {
     // Request Object
-    const request = (url, data, type = 'get') => $.ajax({ url, data, type })
+    const request = (url, data, type = 'get') => $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': window.CSRF_TOKEN
+        },
+        url,
+        data,
+        type,
+    })
 
     // API object
     const API = {
         linked_tasks: () => request(window.CLICKUP_ROUTES.TASK_LINKED),
         //
-        link_task: () => {},
+        link_task: payload => request(window.CLICKUP_ROUTES.TASK_LINK, payload, 'post'),
         unlink_task: task_id => request(window.CLICKUP_ROUTES.TASK_UNLINK, {task_id}, 'delete')
     }
 
@@ -40,35 +47,76 @@ $(document).ready(function() {
                 API.unlink_task($(this).data('task-id'))
                     .then(refreshLinkedTasks)
                     .catch(console.error)
+                    .always(() => {
+                        self.isLoading(false)
+                    })
             })
         }
     };
 
     // OnLoad actions
-    refreshLinkedTasks();
+    refreshLinkedTasks()
 
+    // ----------------------------------------
     // MODAL JS (Executed when modal is opened)
+    // ----------------------------------------
     initializeModalJS = () => {
         const $ref = $('#clickup-link-tasks-modal')
         // Tabs
-        const $tabSearch = $ref.find('#clickup-tab-search')
+        const $tabLink = $ref.find('#clickup-tab-link')
         const $tabNew = $ref.find('#clickup-tab-new')
         // Tabs Content
-        const $tabContentSearch = $ref.find('#tab-content-search')
-        const $tabContentNew = $ref.find('#tab-content-new')
+        const $formContentLink = $ref.find('#tab-content-link')
+        const $formContentNew = $ref.find('#tab-content-new')
+        // Handlers
+        // -- Link existing
+        const $linkButton = $formContentLink.find('#clickup-link-task')
+        const $linkNotification = $formContentLink.find('.notification')
+        // -- Add new
 
-        $tabSearch.on('click', () => {
+        $tabLink.on('click', () => {
             $tabNew.removeClass('active')
-            $tabSearch.addClass('active')
-            $tabContentSearch.removeClass('d-none')
-            $tabContentNew.addClass('d-none')
+            $tabLink.addClass('active')
+            $formContentLink.removeClass('d-none')
+            $formContentNew.addClass('d-none')
         })
 
         $tabNew.on('click', () => {
-            $tabSearch.removeClass('active')
+            $tabLink.removeClass('active')
             $tabNew.addClass('active')
-            $tabContentNew.removeClass('d-none')
-            $tabContentSearch.addClass('d-none')
+            $formContentNew.removeClass('d-none')
+            $formContentLink.addClass('d-none')
+        })
+
+        $linkButton.on('click', function() {
+            const button = $(this)
+            button.prop('disabled', true)
+            button.html('Linking...')
+
+            API.link_task($formContentLink.serialize())
+                .then(response => {
+                    if (response.task) {
+                        $formContentLink[0].reset()
+                        $linkNotification.find('.alert-success').removeClass('d-none')
+                        refreshLinkedTasks()
+                    } else {
+                        $linkNotification.find('.alert-danger').removeClass('d-none')
+                        $linkNotification.find('.link_error_message').html(response.error)
+                    }
+                })
+                .catch(error => {
+                    const message = error.responseJSON.error
+                    $linkNotification.find('.alert-danger').removeClass('d-none')
+                    $linkNotification.find('.link_error_message').html(message)
+                })
+                .always(() => {
+                    button.prop('disabled', false)
+                    button.html('Link')
+                    setTimeout(() => {
+                        $linkNotification.find('.alert-success').addClass('d-none')
+                        $linkNotification.find('.alert-danger').addClass('d-none')
+                    }, 5000)
+                })
         })
     }
 });
