@@ -20,6 +20,26 @@
         </div>
     </div>
 
+    {{-- Enabled --}}
+    <div class="form-group{{ $errors->has('settings[clickupintegration.enabled]') ? ' has-error' : '' }}">
+        <label for="clickupintegration.enabled" class="col-sm-2 control-label">{{ __('Integration Enabled?') }}</label>
+
+        <div class="col-sm-6">
+            <div class="controls">
+                <div class="onoffswitch-wrap">
+                    <div class="onoffswitch">
+                        <input type="checkbox" name="settings[clickupintegration.enabled]" value="1" id="clickupintegration.enabled" class="onoffswitch-checkbox" @if (old('settings[clickupintegration.enabled]', $settings['clickupintegration.enabled']))checked="checked"@endif >
+                        <label class="onoffswitch-label" for="clickupintegration.enabled"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-help">
+                Hide/Show the Integration, useful to configure initial settings before enabling
+            </div>
+            @include('partials/field_error', ['field'=>'settings.clickupintegration.enabled'])
+        </div>
+    </div>
+
     <!-- API Token -->
     <div class="form-group{{ $errors->has('settings[clickupintegration.api_token]') ? ' has-error' : '' }}">
         <label for="api_token" class="col-sm-2 control-label">{{ __('ClickUp API Token') }}</label>

@@ -79,6 +79,7 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
 
                 $settings = Option::getOptions([
                     self::MODULE_FIELDS[self::FIELD_API_TOKEN],
+                    self::MODULE_FIELDS[self::FIELD_ENABLED],
                     self::MODULE_FIELDS[self::FIELD_ENVIRONMENT],
                     self::MODULE_FIELDS[self::FIELD_TEAM_ID],
                     self::MODULE_FIELDS[self::FIELD_LIST_ID],
@@ -126,6 +127,10 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
         Eventy::addAction('conversation.after_prev_convs', function($customer, $conversation) {
             // Skip if no customer (e.g. a draft email)
             if (empty($customer)) {
+                return;
+            }
+
+            if (! self::isEnabled()) {
                 return;
             }
 

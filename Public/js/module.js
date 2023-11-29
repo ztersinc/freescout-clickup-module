@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    const imgPlaceholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVZJREFUSEvtls8rRFEUxz93MiUrmRqpKb9SkjTNwoLI+JmFLG3E1tqCncyS8gcoOyllI1OkptGIkg01ZTU2ikxPWSgyTfM0c7e4P149C+9s7uKeez7nfM89tyvcPVz+wEQA9kv1QGq/lEZf6sF9aJ1TJ5bugreC0k8f3L4ATYnvA4YboWMRSq9w1ClXhemDfwwkYPgQYjOQm4XHtIpZ2/cO7lmB+AbcbcLtqhbUOzg6BGNZeLmCTBLcsg/g+ihM30AoDMdx+HjShtpXLEKQPIXmUTibgueMEdQe3JeC3jXIr0M+ZQy1A7dMwsgJFLOyWrfiA7ghJvtaKcm+fjpWULOKRR1M5CDSL2+wc2ENNQMntqB7Wc5qdWY9mt4DUp3X8XMov8P9Dvz2W3Iu4eFAmZYeuG0eBnaVwWoOhW24XlL66oGVYcwdArC5ZpYnAqkthTM/9v+k/gIrRZQ5bKD+HAAAAABJRU5ErkJggg=="
+
     // Request Object
     const request = (url, data, type = 'get') => $.ajax({
         headers: {
@@ -12,9 +14,10 @@ $(document).ready(function() {
     // API object
     const API = {
         linked_tasks: () => request(window.CLICKUP_ROUTES.TASK_LINKED),
-        //
         link_task: payload => request(window.CLICKUP_ROUTES.TASK_LINK, payload, 'post'),
-        unlink_task: task_id => request(window.CLICKUP_ROUTES.TASK_UNLINK, {task_id}, 'delete')
+        unlink_task: task_id => request(window.CLICKUP_ROUTES.TASK_UNLINK, {task_id}, 'delete'),
+        assignee: () => request(window.CLICKUP_ROUTES.TASK_ASSIGNEE),
+        create_task: payload => request(window.CLICKUP_ROUTES.TASK_CREATE, payload, 'post'),
     }
 
     // Events
@@ -73,6 +76,10 @@ $(document).ready(function() {
         const $linkButton = $formContentLink.find('#clickup-link-task')
         const $linkNotification = $formContentLink.find('.notification')
         // -- Add new
+        const $newButton = $formContentNew.find('#clickup-new-task')
+        const $newNotification = $formContentNew.find('.notification')
+        const $assigneeHandler = $formContentNew.find('.select2.select2-assignee')
+        let $isAssigneeLoaded = false
 
         $tabLink.on('click', () => {
             $tabNew.removeClass('active')
@@ -86,12 +93,38 @@ $(document).ready(function() {
             $tabNew.addClass('active')
             $formContentNew.removeClass('d-none')
             $formContentLink.addClass('d-none')
+
+            if (! $isAssigneeLoaded) {
+                // Loading and caching assignee
+                API.assignee().then(results => {
+                    const data = results.map(obj => {
+                        obj.text = obj.username;
+                        return obj;
+                    }).filter(obj => obj.text);
+
+                    $assigneeHandler.select2({
+                        placeholder: "Select Assignee",
+                        data,
+                        templateResult: state => {
+                            if (!state.id) return state.text;
+                            return $(`<span>
+                                <img class="assignee-img" src="${state.profilePicture || imgPlaceholder}" /> ${state.username}
+                            </span>`);
+                        }
+                    });
+
+                    $isAssigneeLoaded = true;
+                })
+            }
         })
 
         $linkButton.on('click', function() {
             const button = $(this)
             button.prop('disabled', true)
             button.html('Linking...')
+
+            $linkNotification.find('.alert-success').addClass('d-none')
+            $linkNotification.find('.alert-danger').addClass('d-none')
 
             API.link_task($formContentLink.serialize())
                 .then(response => {
@@ -101,21 +134,51 @@ $(document).ready(function() {
                         refreshLinkedTasks()
                     } else {
                         $linkNotification.find('.alert-danger').removeClass('d-none')
-                        $linkNotification.find('.link_error_message').html(response.error)
+                        $linkNotification.find('.link-error-message').html(response.error || '')
                     }
                 })
                 .catch(error => {
                     const message = error.responseJSON.error
                     $linkNotification.find('.alert-danger').removeClass('d-none')
-                    $linkNotification.find('.link_error_message').html(message)
+                    $linkNotification.find('.link-error-message').html(message)
                 })
                 .always(() => {
                     button.prop('disabled', false)
                     button.html('Link')
-                    setTimeout(() => {
-                        $linkNotification.find('.alert-success').addClass('d-none')
-                        $linkNotification.find('.alert-danger').addClass('d-none')
-                    }, 5000)
+                })
+        })
+
+        $newButton.on('click', function() {
+            const button = $(this)
+            button.prop('disabled', true)
+            button.html('Creating...')
+
+            $newNotification.find('.alert-success').addClass('d-none')
+            $newNotification.find('.alert-danger').addClass('d-none')
+
+            API.create_task($formContentNew.serialize())
+                .then(response => {
+                    if (response.task) {
+                        const task = response.task
+                        $formContentNew[0].reset()
+                        $assigneeHandler.val(null).trigger('change')
+                        $newNotification.find('.alert-success').removeClass('d-none')
+                        $newNotification.find('.new-task-url').attr("href", task.url)
+                        $newNotification.find('.new-task-url').html(task.url)
+                        refreshLinkedTasks()
+                    } else {
+                        $newNotification.find('.alert-danger').removeClass('d-none')
+                        $newNotification.find('.new-error-message').html(response.error || '')
+                    }
+                })
+                .catch(error => {
+                    const message = error.responseJSON.error
+                    $newNotification.find('.alert-danger').removeClass('d-none')
+                    $newNotification.find('.new-error-message').html(message)
+                })
+                .always(() => {
+                    button.prop('disabled', false)
+                    button.html('Create')
                 })
         })
     }

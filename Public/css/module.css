@@ -57,3 +57,27 @@
 .clickup-modal-content {
     padding: 15px;
 }
+
+span.select2-container {
+    width: 100% !important;
+}
+
+.select2-selection--multiple{
+    overflow: hidden !important;
+    height: auto !important;
+}
+
+.select2-selection__choice {
+    padding: 5px 10px 5px 30px !important;
+}
+
+.select2-selection__choice__remove {
+    font-size: 1.5em !important;
+    margin-top: 5px;
+}
+
+.assignee-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+}

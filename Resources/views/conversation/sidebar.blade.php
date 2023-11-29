@@ -41,6 +41,7 @@
 
 @section('stylesheets')
     @parent
+    <link href="{{ asset(\Module::getPublicPath('clickupintegration').'/css/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset(\Module::getPublicPath('clickupintegration').'/css/module.css') }}" rel="stylesheet">
 @endsection
 
@@ -51,8 +52,11 @@
         window.CLICKUP_ROUTES = {
             TASK_LINKED: '{{ route('clickup.tasks.linked', $conversation->id) }}',
             TASK_LINK: '{{ route('clickup.tasks.link') }}',
-            TASK_UNLINK: '{{ route('clickup.tasks.unlink') }}'
+            TASK_UNLINK: '{{ route('clickup.tasks.unlink') }}',
+            TASK_ASSIGNEE: '{{ route('clickup.tasks.assignee') }}',
+            TASK_CREATE: '{{ route('clickup.tasks.create') }}'
         }
     </script>
+    <script src="{{ asset(\Module::getPublicPath('clickupintegration').'/js/select2.min.js') }}"></script>
     <script src="{{ asset(\Module::getPublicPath('clickupintegration').'/js/module.js') }}"></script>
 @endsection

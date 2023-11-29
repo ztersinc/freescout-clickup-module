@@ -7,6 +7,7 @@ use Modules\ClickupIntegration\Providers\ClickupIntegrationServiceProvider as Pr
 use Modules\ClickupIntegration\Entities\Task;
 use ClickUpClient\Client;
 use Exception;
+use Modules\ClickupIntegration\Entities\Assignee;
 
 class ClickupService
 {
@@ -22,11 +23,6 @@ class ClickupService
     public function __construct()
     {
         $this->client = new Client(Provider::getApiToken());
-
-        // $this->client->taskList(901002892846)->addTask([
-        //     'name' => 'Test task created via API',
-        //     'description' => 'Description of task'
-        // ]);
     }
 
     public function isAuthorized()
@@ -112,11 +108,7 @@ class ClickupService
             ]);
 
             if ($task) {
-                $environment = Provider::getEnvironment();
-                $taskId = $task['id'];
-                $this->client->task($taskId)->setCustomField(Provider::getLinkId(), "{$environment}-{$conversationId}");
-                $this->client->task($taskId)->setCustomField(Provider::getLinkURL(), route('conversations.view', $conversationId));
-
+                $this->_linkTask($conversationId, $task['id']);
                 $response['task'] = Task::hydrate($task);
             } else {
                 $response['error'] = 'Task not found';
@@ -126,6 +118,21 @@ class ClickupService
         }
 
         return $response;
+    }
+
+    /**
+     * Perform the internal task linking for custom fields
+     *
+     * @param string $conversationId
+     * @param string $taskId
+     *
+     * @return void
+     */
+    private function _linkTask($conversationId, $taskId)
+    {
+        $environment = Provider::getEnvironment();
+        $this->client->task($taskId)->setCustomField(Provider::getLinkId(), "{$environment}-{$conversationId}");
+        $this->client->task($taskId)->setCustomField(Provider::getLinkURL(), route('conversations.view', $conversationId));
     }
 
     /**
@@ -139,5 +146,46 @@ class ClickupService
         $task = $this->client->task($taskId);
         $task->deleteCustomField(Provider::getLinkId());
         $task->deleteCustomField(Provider::getLinkURL());
+    }
+
+    /**
+     * Return a list of assignee from the $listId in settings
+     *
+     * @return array
+     */
+    public function assignee()
+    {
+        $data = $this->client->taskList(Provider::getListId())->members();
+        $members = $data['members'] ?? [];
+
+        return array_map([Assignee::class, 'hydrate'], $members);
+    }
+
+    /**
+     * Creates a new Task and links it to the conversation
+     *
+     * @return array
+     */
+    public function createTask($conversationId, Task $task)
+    {
+        $response = [
+            'task' => false,
+            'error' => false
+        ];
+
+        try {
+            $task = $this->client->taskList(Provider::getListId())->addTask([
+                'name' => $task->name,
+                'description' => $task->description,
+                'assignees' => $task->assignees
+            ]);
+
+            $this->_linkTask($conversationId, $task['id']);
+            $response['task'] = Task::hydrate($task);
+        } catch (Exception $e) {
+            $response['error'] = $this->getPartialError($e->getMessage());
+        }
+
+        return $response;
     }
 }
