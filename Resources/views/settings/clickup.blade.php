@@ -60,12 +60,18 @@
 
         <div class="col-sm-6">
             <select id="locale" class="form-control input-sized" name="settings[clickupintegration.environment]" required>
-                <option value="dev" {{ $settings['clickupintegration.environment'] === 'dev' ? 'selected' : '' }}>Development</option>
-                <option value="uat" {{ $settings['clickupintegration.environment'] === 'uat' ? 'selected' : '' }}>UAT</option>
-                <option value="prod" {{ $settings['clickupintegration.environment'] === 'prod' ? 'selected' : '' }}>Production</option>
+                @foreach ($settings['environments'] as $environment => $label)
+                    <option
+                        value="{{ $environment }}"
+                        {{ $settings['clickupintegration.environment'] === $environment ? 'selected' : '' }}
+                    >
+                        {{ $label }}
+                    </option>
+                @endforeach
             </select>
             <div class="form-help">
-                The selected environment will be used to prefix the "FreeScout ID" custom field in a ClickUp task. example: (dev-1, uat-1, prod-1)
+                The environment will be used to prefix the "FreeScout ID" custom field in a ClickUp task. <br/>
+                Example: (fs-dev-1, fs-uat-1, fs-prod-1)
             </div>
             @include('partials/field_error', ['field'=>'settings[clickupintegration.environment]'])
         </div>

@@ -1,5 +1,12 @@
 <?php
 
 return [
-    'name' => 'ClickupIntegration'
+    'name' => 'ClickupIntegration',
+    'options' => [
+        'environments' => [
+            'dev'   => 'Development',
+            'uat'   => 'UAT',
+            'prod'  => 'Production'
+        ],
+    ]
 ];

@@ -10,7 +10,7 @@
     <div class="clickup-modal-content">
         <form id="tab-content-link">
             {{-- Link existing task HTML --}}
-            <input type="hidden" name="conversation_id" value="{{ $conversationId }}" />
+            <input type="hidden" name="conversation_id" value="{{ $conversation->id }}" />
             <div class="row">
                 <div class="col-xs-12">
                     <div class="input-group">
@@ -37,17 +37,23 @@
         </form>
         <form id="tab-content-new" class="form-horizontal d-none">
             {{-- Add new task HTML --}}
-            <input type="hidden" name="conversation_id" value="{{ $conversationId }}" />
+            <input type="hidden" name="conversation_id" value="{{ $conversation->id }}" />
             <div class="form-group">
                 <label for="name" class="col-sm-2 control-label">Name</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Task Name">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Task Name" value="{{ $conversation->subject }}">
                 </div>
             </div>
             <div class="form-group">
                 <label for="description" class="col-sm-2 control-label">Description</label>
                 <div class="col-sm-10">
-                    <textarea class="form-control" id="description" name="description" placeholder="Task Description"></textarea>
+                    <textarea
+                        class="form-control"
+                        id="description"
+                        name="description"
+                        placeholder="Task Description"
+                        rows=5
+                    >{{ $conversation->customer_email }}</textarea>
                 </div>
             </div>
             <div class="form-group">

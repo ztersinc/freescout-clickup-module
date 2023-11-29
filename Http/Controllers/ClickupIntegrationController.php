@@ -5,6 +5,7 @@ namespace Modules\ClickupIntegration\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use App\Conversation as AppConversation;
 use Modules\ClickupIntegration\Entities\Conversation;
 use Modules\ClickupIntegration\Entities\Task;
 use Modules\ClickupIntegration\Providers\ClickupIntegrationServiceProvider as Provider;
@@ -85,7 +86,8 @@ class ClickupIntegrationController extends Controller
      */
     public function linkTasks(ClickupService $service, $conversationId)
     {
-        return view(Provider::MODULE_NAME . '::conversation.partials.link-tasks-modal', compact('conversationId'));
+        $conversation = AppConversation::findOrFail($conversationId);
+        return view(Provider::MODULE_NAME . '::conversation.partials.link-tasks-modal', compact('conversation'));
     }
 
     /**
@@ -112,7 +114,7 @@ class ClickupIntegrationController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
-            'assignees' => 'required|array|min:1',
+            'assignees' => 'array|min:1',
             'conversation_id' => 'required'
         ]);
 

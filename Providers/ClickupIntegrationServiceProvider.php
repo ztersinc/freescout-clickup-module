@@ -4,8 +4,9 @@ namespace Modules\ClickupIntegration\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\ClickupIntegration\Providers\Traits\IntegrationFields;
-use Eventy;
 use Modules\ClickupIntegration\Services\ClickupService;
+use Config;
+use Eventy;
 use Option;
 use View;
 
@@ -85,9 +86,11 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
                     self::MODULE_FIELDS[self::FIELD_LIST_ID],
                     self::MODULE_FIELDS[self::FIELD_LINK_ID],
                     self::MODULE_FIELDS[self::FIELD_LINK_URL],
-                    'integration_status'
+                    'integration_status',
+                    'environments'
                 ], [
-                    'integration_status' => $clickupService->isAuthorized()
+                    'integration_status' => $clickupService->isAuthorized(),
+                    'environments' => Config::get(self::MODULE_NAME . '.options.environments')
                 ]);
             }
             return $settings;
@@ -172,7 +175,7 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(array_merge(array_map(function ($path) {
             return $path . '/modules/clickupintegration';
-        }, \Config::get('view.paths')), [$sourcePath]), 'clickupintegration');
+        }, Config::get('view.paths')), [$sourcePath]), 'clickupintegration');
     }
 
     /**

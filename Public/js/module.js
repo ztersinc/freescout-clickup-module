@@ -160,7 +160,6 @@ $(document).ready(function() {
                 .then(response => {
                     if (response.task) {
                         const task = response.task
-                        $formContentNew[0].reset()
                         $assigneeHandler.val(null).trigger('change')
                         $newNotification.find('.alert-success').removeClass('d-none')
                         $newNotification.find('.new-task-url').attr("href", task.url)

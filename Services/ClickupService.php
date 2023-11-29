@@ -38,6 +38,12 @@ class ClickupService
         return $isAuthorized;
     }
 
+    public static function buildFreescoutId($conversationId)
+    {
+        $environment = Provider::getEnvironment();
+        return "fs-{$environment}-{$conversationId}";
+    }
+
     /**
      * Returns a partial error to be displayed in UI
      *
@@ -62,7 +68,6 @@ class ClickupService
             'error' => false
         ];
 
-        $environment = Provider::getEnvironment();
         $listId = Provider::getListId();
         $linkId = Provider::getLinkId();
 
@@ -72,7 +77,7 @@ class ClickupService
                     [
                         'field_id'  => $linkId,
                         'operator'  => '=',
-                        'value'     => "{$environment}-{$conversationId}"
+                        'value'     => self::buildFreescoutId($conversationId)
                     ]
                 ])
             ]);
@@ -131,7 +136,7 @@ class ClickupService
     private function _linkTask($conversationId, $taskId)
     {
         $environment = Provider::getEnvironment();
-        $this->client->task($taskId)->setCustomField(Provider::getLinkId(), "{$environment}-{$conversationId}");
+        $this->client->task($taskId)->setCustomField(Provider::getLinkId(), self::buildFreescoutId($conversationId));
         $this->client->task($taskId)->setCustomField(Provider::getLinkURL(), route('conversations.view', $conversationId));
     }
 
