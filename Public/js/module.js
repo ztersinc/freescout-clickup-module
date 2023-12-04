@@ -146,7 +146,7 @@ $(document).ready(function() {
                     if (!state.id) return state.text
                     return $(`<span
                         class="label"
-                        style="color: white; background: ${state.fgColor}; border-radius: 15px"
+                        style="color: white; background: ${state.bgColor}; border-radius: 15px; font-weight: 600;"
                     >${state.name}</span>`);
                 }
 
