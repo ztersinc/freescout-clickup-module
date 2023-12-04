@@ -50,11 +50,12 @@
     <script type="text/javascript" {!! \Helper::cspNonceAttr() !!}>
         window.CSRF_TOKEN = "{{ csrf_token() }}"
         window.CLICKUP_ROUTES = {
+            TASK_CREATE: '{{ route('clickup.tasks.create') }}',
             TASK_LINKED: '{{ route('clickup.tasks.linked', $conversation->id) }}',
             TASK_LINK: '{{ route('clickup.tasks.link') }}',
             TASK_UNLINK: '{{ route('clickup.tasks.unlink') }}',
-            TASK_ASSIGNEE: '{{ route('clickup.tasks.assignee') }}',
-            TASK_CREATE: '{{ route('clickup.tasks.create') }}'
+            TASK_ASSIGNEES: '{{ route('clickup.tasks.assignees') }}',
+            TASK_TAGS: '{{ route('clickup.tasks.tags') }}',
         }
     </script>
     <script src="{{ asset(\Module::getPublicPath('clickupintegration').'/js/select2.min.js') }}"></script>

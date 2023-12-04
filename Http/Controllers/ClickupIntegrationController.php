@@ -94,11 +94,22 @@ class ClickupIntegrationController extends Controller
      * GET - Return a list of assignee (users) to be added for a new Task
      *
      * @param ClickupService $service
-     * @return void
+     * @return array
      */
-    public function assignee(ClickupService $service)
+    public function assignees(ClickupService $service)
     {
-        return $service->assignee();
+        return $service->assignees();
+    }
+
+    /**
+     * GET - Return a list of tags to be added for a new Task
+     *
+     * @param ClickupService $service
+     * @return array
+     */
+    public function tags(ClickupService $service)
+    {
+        return $service->tags();
     }
 
     /**
@@ -106,16 +117,19 @@ class ClickupIntegrationController extends Controller
      *
      * @param Request $request
      * @param ClickupService $service
-     * @return void
+     * @return array [task => Task::class, error: '']
      */
     public function create(Request $request, ClickupService $service)
     {
         // Validation
         $validator = Validator::make($request->all(), [
+            'conversation_id' => 'required',
+            'submitter_name' => 'required',
+            'submitter_email' => 'required|email',
             'name' => 'required',
             'description' => 'required',
             'assignees' => 'array|min:1',
-            'conversation_id' => 'required'
+            'tags' => 'array|min:1',
         ]);
 
         if ($validator->fails()) {

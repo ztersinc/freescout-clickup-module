@@ -4,10 +4,12 @@ namespace Modules\ClickupIntegration\Services;
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Modules\ClickupIntegration\Providers\ClickupIntegrationServiceProvider as Provider;
+use Modules\ClickupIntegration\Entities\Group;
+use Modules\ClickupIntegration\Entities\Member;
+use Modules\ClickupIntegration\Entities\Tag;
 use Modules\ClickupIntegration\Entities\Task;
 use ClickUpClient\Client;
 use Exception;
-use Modules\ClickupIntegration\Entities\Assignee;
 
 class ClickupService
 {
@@ -68,14 +70,13 @@ class ClickupService
             'error' => false
         ];
 
-        $listId = Provider::getListId();
-        $linkId = Provider::getLinkId();
-
         try {
-            $data = $this->client->get("list/{$listId}/task", [
+            $teamId = Provider::getTeamId();
+
+            $data = $this->client->get("team/{$teamId}/task", [
                 'custom_fields' => json_encode([
                     [
-                        'field_id'  => $linkId,
+                        'field_id'  => Provider::getFreescoutIdFID(),
                         'operator'  => '=',
                         'value'     => self::buildFreescoutId($conversationId)
                     ]
@@ -105,11 +106,13 @@ class ClickupService
             'error' => false
         ];
 
+        $teamId = Provider::getTeamId();
+
         try {
             $customTaskId = basename($taskUrlId);
             $task = $this->client->get("task/{$customTaskId}", [
                 'custom_task_ids' => "true",
-                'team_id' => Provider::getTeamId(),
+                'team_id' => $teamId,
             ]);
 
             if ($task) {
@@ -130,14 +133,18 @@ class ClickupService
      *
      * @param string $conversationId
      * @param string $taskId
+     * @param array $extra
      *
      * @return void
      */
-    private function _linkTask($conversationId, $taskId)
+    private function _linkTask($conversationId, $taskId, array $extra = [])
     {
-        $environment = Provider::getEnvironment();
-        $this->client->task($taskId)->setCustomField(Provider::getLinkId(), self::buildFreescoutId($conversationId));
-        $this->client->task($taskId)->setCustomField(Provider::getLinkURL(), route('conversations.view', $conversationId));
+        $this->client->task($taskId)->setCustomField(Provider::getFreescoutIdFID(), self::buildFreescoutId($conversationId));
+        $this->client->task($taskId)->setCustomField(Provider::getFreescoutURLFID(), route('conversations.view', $conversationId));
+
+        foreach($extra as $fieldId => $value) {
+            $this->client->task($taskId)->setCustomField($fieldId, $value);
+        }
     }
 
     /**
@@ -149,21 +156,41 @@ class ClickupService
     public function unlinkTask($taskId)
     {
         $task = $this->client->task($taskId);
-        $task->deleteCustomField(Provider::getLinkId());
-        $task->deleteCustomField(Provider::getLinkURL());
+        $task->deleteCustomField(Provider::getFreescoutIdFID());
+        $task->deleteCustomField(Provider::getFreescoutURLFID());
     }
 
     /**
-     * Return a list of assignee from the $listId in settings
+     * Return a list of assignees (Members and Groups)
      *
      * @return array
      */
-    public function assignee()
+    public function assignees()
     {
-        $data = $this->client->taskList(Provider::getListId())->members();
-        $members = $data['members'] ?? [];
+        # Members
+        $members = $this->client->taskList(Provider::getListId())->members();
+        $members = array_map([Member::class, 'hydrate'], $members['members'] ?? []);
 
-        return array_map([Assignee::class, 'hydrate'], $members);
+        # Groups (Currently unavailable to save on API v2 create task)
+        $groups = [];
+        #$groups = $this->client->get('group', ['team_id' => Provider::getTeamId()]);
+        #$groups = array_map([Group::class, 'hydrate'], $groups['groups'] ?? []);
+
+        return compact('members', 'groups');
+    }
+
+    /**
+     * Return a list of assignees (Members and Groups)
+     * > Space Id is required to retrieve Tags
+     *
+     * @return array
+     */
+    public function tags()
+    {
+        $spaceId = Provider::getSpaceId();
+        $tags = $this->client->get("space/{$spaceId}/tag");
+
+        return array_map([Tag::class, 'hydrate'], $tags['tags'] ?? []);
     }
 
     /**
@@ -179,14 +206,18 @@ class ClickupService
         ];
 
         try {
-            $task = $this->client->taskList(Provider::getListId())->addTask([
+            $result = $this->client->taskList(Provider::getListId())->addTask([
                 'name' => $task->name,
                 'description' => $task->description,
-                'assignees' => $task->assignees
+                'assignees' => $task->assignees,
+                'tags' => $task->tags,
             ]);
 
-            $this->_linkTask($conversationId, $task['id']);
-            $response['task'] = Task::hydrate($task);
+            $this->_linkTask($conversationId, $result['id'], [
+                Provider::getSubmitterNameFID() => $task->submitterName,
+                Provider::getSubmitterEmailFID() => $task->submitterEmail,
+            ]);
+            $response['task'] = Task::hydrate($result);
         } catch (Exception $e) {
             $response['error'] = $this->getPartialError($e->getMessage());
         }

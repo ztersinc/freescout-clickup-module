@@ -79,15 +79,21 @@ class ClickupIntegrationServiceProvider extends ServiceProvider
                 $clickupService = new ClickupService();
 
                 $settings = Option::getOptions([
+                    // General
                     self::MODULE_FIELDS[self::FIELD_API_TOKEN],
                     self::MODULE_FIELDS[self::FIELD_ENABLED],
                     self::MODULE_FIELDS[self::FIELD_ENVIRONMENT],
-                    self::MODULE_FIELDS[self::FIELD_TEAM_ID],
-                    self::MODULE_FIELDS[self::FIELD_LIST_ID],
-                    self::MODULE_FIELDS[self::FIELD_LINK_ID],
-                    self::MODULE_FIELDS[self::FIELD_LINK_URL],
                     'integration_status',
-                    'environments'
+                    'environments',
+                    // Linking configuration
+                    self::MODULE_FIELDS[self::FIELD_TEAM_ID],
+                    self::MODULE_FIELDS[self::FIELD_SPACE_ID],
+                    self::MODULE_FIELDS[self::FIELD_LIST_ID],
+                    // Custom Fields configuration
+                    self::MODULE_FIELDS[self::FIELD_FREESCOUT_ID],
+                    self::MODULE_FIELDS[self::FIELD_FREESCOUT_URL],
+                    self::MODULE_FIELDS[self::FIELD_SUBMITTER_NAME],
+                    self::MODULE_FIELDS[self::FIELD_SUBMITTER_EMAIL],
                 ], [
                     'integration_status' => $clickupService->isAuthorized(),
                     'environments' => Config::get(self::MODULE_NAME . '.options.environments')

@@ -79,59 +79,103 @@
 
     <h3 class="subheader">{{ __('Linking Configuration') }}</h3>
 
-    <!-- Team ID -->
+    <!-- Team Id -->
     <div class="form-group{{ $errors->has('settings[clickupintegration.team_id]') ? ' has-error' : '' }}">
-        <label for="team_id" class="col-sm-2 control-label">{{ __('Team id') }}</label>
+        <label for="team_id" class="col-sm-2 control-label">{{ __('Team Id') }}</label>
 
         <div class="col-sm-6">
             <input id="team_id" type="text" class="form-control input-sized" name="settings[clickupintegration.team_id]" value="{{ old('settings[clickupintegration.team_id]', $settings['clickupintegration.team_id']) }}" maxlength="60" required>
             <div class="form-help">
-                Team ID in ClickUp
+                Team Id in ClickUp
             </div>
 
             @include('partials/field_error', ['field'=>'settings[clickupintegration.team_id]'])
         </div>
     </div>
 
-    <!-- List ID -->
+    <!-- Space Id -->
+    <div class="form-group{{ $errors->has('settings[clickupintegration.space_id]') ? ' has-error' : '' }}">
+        <label for="space_id" class="col-sm-2 control-label">{{ __('Space Id') }}</label>
+
+        <div class="col-sm-6">
+            <input id="space_id" type="text" class="form-control input-sized" name="settings[clickupintegration.space_id]" value="{{ old('settings[clickupintegration.space_id]', $settings['clickupintegration.space_id']) }}" maxlength="60" required>
+            <div class="form-help">
+                Space Id in ClickUp, used to retrieve Tags
+            </div>
+
+            @include('partials/field_error', ['field'=>'settings[clickupintegration.space_id]'])
+        </div>
+    </div>
+
+    <!-- List Id -->
     <div class="form-group{{ $errors->has('settings[clickupintegration.list_id]') ? ' has-error' : '' }}">
-        <label for="list_id" class="col-sm-2 control-label">{{ __('List id') }}</label>
+        <label for="list_id" class="col-sm-2 control-label">{{ __('List Id') }}</label>
 
         <div class="col-sm-6">
             <input id="list_id" type="text" class="form-control input-sized" name="settings[clickupintegration.list_id]" value="{{ old('settings[clickupintegration.list_id]', $settings['clickupintegration.list_id']) }}" maxlength="60" required>
             <div class="form-help">
-                List ID in ClickUp where new tasks created via FreeScout will be added
+                List Id in ClickUp where new tasks created via FreeScout will be added
             </div>
 
             @include('partials/field_error', ['field'=>'settings[clickupintegration.list_id]'])
         </div>
     </div>
 
-    <!-- FreeScout ID - Field id -->
-    <div class="form-group{{ $errors->has('settings[clickupintegration.link_id]') ? ' has-error' : '' }}">
-        <label for="link_id" class="col-sm-2 control-label">{{ __('FreeScout ID - Field id') }}</label>
+    <h3 class="subheader">{{ __('Custom Fields Configuration') }}</h3>
+
+    <!-- Submitter Name - Field id -->
+    <div class="form-group{{ $errors->has('settings[clickupintegration.submitter_name]') ? ' has-error' : '' }}">
+        <label for="submitter_name" class="col-sm-2 control-label">{{ __('Submitter - Field Id') }}</label>
 
         <div class="col-sm-6">
-            <input id="link_id" type="text" class="form-control input-sized" name="settings[clickupintegration.link_id]" value="{{ old('settings[clickupintegration.link_id]', $settings['clickupintegration.link_id']) }}" maxlength="60" required>
+            <input id="submitter_name" type="text" class="form-control input-sized" name="settings[clickupintegration.submitter_name]" value="{{ old('settings[clickupintegration.submitter_name]', $settings['clickupintegration.submitter_name']) }}" maxlength="60" required>
             <div class="form-help">
-                Internal id for field "FreeScout ID", this is required to link a FreeScout conversation with a ClickUp task
+                Internal id for field "Submitter"
             </div>
 
-            @include('partials/field_error', ['field'=>'settings[clickupintegration.link_id]'])
+            @include('partials/field_error', ['field'=>'settings[clickupintegration.submitter_name]'])
+        </div>
+    </div>
+
+    <!-- Submitter Email - Field id -->
+    <div class="form-group{{ $errors->has('settings[clickupintegration.submitter_email]') ? ' has-error' : '' }}">
+        <label for="submitter_email" class="col-sm-2 control-label">{{ __('Submitter Email - Field Id') }}</label>
+
+        <div class="col-sm-6">
+            <input id="submitter_email" type="text" class="form-control input-sized" name="settings[clickupintegration.submitter_email]" value="{{ old('settings[clickupintegration.submitter_email]', $settings['clickupintegration.submitter_email']) }}" maxlength="60" required>
+            <div class="form-help">
+                Internal id for field "Submitter Email"
+            </div>
+
+            @include('partials/field_error', ['field'=>'settings[clickupintegration.submitter_email]'])
+        </div>
+    </div>
+
+    <!-- FreeScout ID - Field id -->
+    <div class="form-group{{ $errors->has('settings[clickupintegration.freescout_id]') ? ' has-error' : '' }}">
+        <label for="freescout_id" class="col-sm-2 control-label">{{ __('FreeScout Id - Field Id') }}</label>
+
+        <div class="col-sm-6">
+            <input id="freescout_id" type="text" class="form-control input-sized" name="settings[clickupintegration.freescout_id]" value="{{ old('settings[clickupintegration.freescout_id]', $settings['clickupintegration.freescout_id']) }}" maxlength="60" required>
+            <div class="form-help">
+                Internal id for field "FreeScout ID"
+            </div>
+
+            @include('partials/field_error', ['field'=>'settings[clickupintegration.freescout_id]'])
         </div>
     </div>
 
     <!-- FreeScout URL - Field id -->
-    <div class="form-group{{ $errors->has('settings[clickupintegration.link_url]') ? ' has-error' : '' }}">
-        <label for="link_url" class="col-sm-2 control-label">{{ __('FreeScout URL - Field id') }}</label>
+    <div class="form-group{{ $errors->has('settings[clickupintegration.freescout_url]') ? ' has-error' : '' }}">
+        <label for="freescout_url" class="col-sm-2 control-label">{{ __('FreeScout URL - Field Id') }}</label>
 
         <div class="col-sm-6">
-            <input id="link_url" type="text" class="form-control input-sized" name="settings[clickupintegration.link_url]" value="{{ old('settings[clickupintegration.link_url]', $settings['clickupintegration.link_url']) }}" maxlength="60" required>
+            <input id="freescout_url" type="text" class="form-control input-sized" name="settings[clickupintegration.freescout_url]" value="{{ old('settings[clickupintegration.freescout_url]', $settings['clickupintegration.freescout_url']) }}" maxlength="60" required>
             <div class="form-help">
-                Internal id for field "FreeScout URL", this is required to link a FreeScout conversation with a ClickUp task
+                Internal id for field "FreeScout URL"
             </div>
 
-            @include('partials/field_error', ['field'=>'settings[clickupintegration.link_url]'])
+            @include('partials/field_error', ['field'=>'settings[clickupintegration.freescout_url]'])
         </div>
     </div>
 

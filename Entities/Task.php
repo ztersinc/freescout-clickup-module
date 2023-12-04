@@ -14,6 +14,10 @@ class Task
     public string $url;
     public string $status;
     public array $assignees;
+    public array $tags;
+    // Custom fields
+    public string $submitterName;
+    public string $submitterEmail;
 
     /**
      * Hydrates an entity with the required data for the integration
@@ -33,6 +37,10 @@ class Task
         $instance->url = $data['url'] ?? '';
         $instance->status = $data['status']['status'] ?? '-';
         $instance->assignees = $data['assignees'] ?? [];
+        $instance->tags = $data['tags'] ?? [];
+        // Custom fields
+        $instance->submitterName = $data['submitter_name'] ?? '';
+        $instance->submitterEmail = $data['submitter_email'] ?? '';
 
         return $instance;
     }

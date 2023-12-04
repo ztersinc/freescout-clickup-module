@@ -2,7 +2,7 @@
 
 namespace Modules\ClickupIntegration\Entities;
 
-class Assignee
+class Member
 {
     public string $id;
     public string $username;
@@ -13,7 +13,7 @@ class Assignee
      * Hydrates an entity with the required data for the integration
      *
      * @param array $data
-     * @return Assignee
+     * @return Member
      */
     public static function hydrate(array $data)
     {

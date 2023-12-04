@@ -11,7 +11,8 @@ Route::group(['middleware' => 'web', 'prefix' => \Helper::getSubdirectory(), 'na
 
         // Modal HTML, Link, Assignee and Add
         Route::get('link-modal/{conversationId}', 'ClickupIntegrationController@linkTasks')->name('clickup.tasks.link-modal');
-        Route::get('assignee', 'ClickupIntegrationController@assignee')->name('clickup.tasks.assignee');
+        Route::get('assignees', 'ClickupIntegrationController@assignees')->name('clickup.tasks.assignees');
+        Route::get('tags', 'ClickupIntegrationController@tags')->name('clickup.tasks.tags');
         Route::post('/', 'ClickupIntegrationController@create')->name('clickup.tasks.create');
     });
 });

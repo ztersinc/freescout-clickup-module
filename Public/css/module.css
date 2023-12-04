@@ -58,6 +58,7 @@
     padding: 15px;
 }
 
+/* Select 2 */
 span.select2-container {
     width: 100% !important;
 }
@@ -76,8 +77,18 @@ span.select2-container {
     margin-top: 5px;
 }
 
+/* START - Placeholder specific */
+.select2-search--inline {
+    display: contents;
+}
+
+.select2-search__field:placeholder-shown {
+    width: 100% !important;
+}
+/* END */
+
 .assignee-img {
-    width: 30px;
-    height: 30px;
+    width: 15px;
+    height: 15px;
     border-radius: 15px;
 }
