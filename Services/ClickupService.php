@@ -1,14 +1,13 @@
 <?php
 
 namespace Modules\ClickupIntegration\Services;
-require_once __DIR__.'/../vendor/autoload.php';
 
 use Modules\ClickupIntegration\Providers\ClickupIntegrationServiceProvider as Provider;
-use Modules\ClickupIntegration\Entities\Group;
 use Modules\ClickupIntegration\Entities\Member;
 use Modules\ClickupIntegration\Entities\Tag;
 use Modules\ClickupIntegration\Entities\Task;
 use ClickUpClient\Client;
+use League\HTMLToMarkdown\HtmlConverter;
 use Exception;
 
 class ClickupService
@@ -20,11 +19,20 @@ class ClickupService
     private Client $client;
 
     /**
+     * HTML to Markdown Converter
+     * @var HTMLConverter
+     */
+    private HtmlConverter $htmlConverter;
+
+    /**
      * Constructs a new service to connect to ClickUp API
      */
     public function __construct()
     {
         $this->client = new Client(Provider::getApiToken());
+        $this->htmlConverter = new HtmlConverter([
+            'strip_tags' => true
+        ]);
     }
 
     public function isAuthorized()
@@ -208,7 +216,7 @@ class ClickupService
         try {
             $result = $this->client->taskList(Provider::getListId())->addTask([
                 'name' => $task->name,
-                'description' => $task->description,
+                'markdown_description' => $this->htmlConverter->convert($task->description),
                 'assignees' => $task->assignees,
                 'tags' => $task->tags,
             ]);

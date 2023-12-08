@@ -40,7 +40,7 @@
                         id="description"
                         name="description"
                         rows=5
-                    ></textarea>
+                    >{{ $conversation->getFirstThread()->body ?? '' }}</textarea>
                 </div>
             </div>
             {{-- Assignee --}}

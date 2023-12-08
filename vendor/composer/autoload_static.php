@@ -22,6 +22,10 @@ class ComposerStaticInitf87b5a8a07282ce3d164cba6ddf39304
         array (
             'Modules\\ClickupIntegration\\' => 27,
         ),
+        'L' => 
+        array (
+            'League\\HTMLToMarkdown\\' => 22,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -37,8 +41,8 @@ class ComposerStaticInitf87b5a8a07282ce3d164cba6ddf39304
     public static $prefixDirsPsr4 = array (
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -47,6 +51,10 @@ class ComposerStaticInitf87b5a8a07282ce3d164cba6ddf39304
         'Modules\\ClickupIntegration\\' => 
         array (
             0 => __DIR__ . '/../..' . '/',
+        ),
+        'League\\HTMLToMarkdown\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/html-to-markdown/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
