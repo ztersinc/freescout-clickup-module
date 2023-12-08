@@ -79,106 +79,115 @@ $(document).ready(function() {
         // -- Add new
         const $newButton = $formContentNew.find('#clickup-new-task')
         const $newNotification = $formContentNew.find('.notification')
+        const $descriptionHandler = $formContentNew.find('#description')
         const $assigneesHandler = $formContentNew.find('.select2.select2-assignees')
         const $tagsHandler = $formContentNew.find('.select2.select2-tags')
-
-        /**
-         * Select2 Assignees
-         */
-        {
-            const renderAssignees = data => {
-                const assigneeRenderer = state => {
-                    if (!state.id) return state.text
-                    return $(`<span>
-                        <img class="assignee-img" src="${state.imgSrc}" /> ${state.text}
-                    </span>`);
-                }
-
-                $assigneesHandler.select2({
-                    placeholder: 'Select People',
-                    data,
-                    templateResult: assigneeRenderer,
-                    templateSelection: assigneeRenderer
-                });
-            }
-
-            if (window.CLICKUP_LOADED_ASSIGNES) {
-                renderAssignees(window.CLICKUP_LOADED_ASSIGNES)
-            } else {
-                // Loading and caching assignees
-                API.assignees().then(results => {
-                    const members = results.members.map(obj => {
-                        obj.text = obj.username
-                        obj.imgSrc = obj.profilePicture || imgPlaceholder
-                        return obj
-                    })
-
-                    const groups = results.groups.map(obj => {
-                        /**
-                         * Groups are not currently supported
-                         * https://clickup.canny.io/public-api/p/api-call-for-assigning-teams
-                         */
-                        obj.text = false
-                        return obj
-                        // Remove previous lines once supported
-                        obj.text = obj.name
-                        obj.imgSrc = obj.avatarUrl || imgPlaceholder
-                        return obj
-                    })
-
-                    const assignes = [
-                        { text: 'PEOPLE', children: members.filter(obj => obj.text) },
-                        { text: 'TEAMS (not currently supported via API)', children: groups.filter(obj => obj.text) },
-                    ]
-
-                    renderAssignees(assignes)
-                    window.CLICKUP_LOADED_ASSIGNES = assignes
-                })
-            }
-        }
-
-        /**
-         * Select2 Tags
-         */
-        {
-            const renderTags = data => {
-                const tagRenderer = state => {
-                    if (!state.id) return state.text
-                    return $(`<span
-                        class="label"
-                        style="color: white; background: ${state.bgColor}; border-radius: 15px; font-weight: 600;"
-                    >${state.name}</span>`);
-                }
-
-                $tagsHandler.select2({
-                    placeholder: 'Select Tags',
-                    data,
-                    templateResult: tagRenderer,
-                    templateSelection: tagRenderer
-                });
-            }
-
-            if (window.CLICKUP_LOADED_TAGS) {
-                renderTags(window.CLICKUP_LOADED_TAGS)
-            } else {
-                // Loading and caching tags
-                API.tags().then(results => {
-                    const tags = results.map(obj => {
-                        obj.id = obj.name
-                        obj.text = obj.name
-                        return obj
-                    })
-
-                    renderTags(tags)
-                    window.CLICKUP_LOADED_TAGS = tags
-                })
-            }
-        }
 
         /**
          * TAB - Add New Task
          */
         {
+            /**
+             * Summernote
+             */
+            $descriptionHandler.summernote({
+                toolbar: [],
+                height: 250
+            })
+
+            /**
+             * Select2 Assignees
+             */
+            {
+                const renderAssignees = data => {
+                    const assigneeRenderer = state => {
+                        if (!state.id) return state.text
+                        return $(`<span>
+                            <img class="assignee-img" src="${state.imgSrc}" /> ${state.text}
+                        </span>`);
+                    }
+
+                    $assigneesHandler.select2({
+                        placeholder: 'Select People',
+                        data,
+                        templateResult: assigneeRenderer,
+                        templateSelection: assigneeRenderer
+                    });
+                }
+
+                if (window.CLICKUP_LOADED_ASSIGNES) {
+                    renderAssignees(window.CLICKUP_LOADED_ASSIGNES)
+                } else {
+                    // Loading and caching assignees
+                    API.assignees().then(results => {
+                        const members = results.members.map(obj => {
+                            obj.text = obj.username
+                            obj.imgSrc = obj.profilePicture || imgPlaceholder
+                            return obj
+                        })
+
+                        const groups = results.groups.map(obj => {
+                            /**
+                             * Groups are not currently supported
+                             * https://clickup.canny.io/public-api/p/api-call-for-assigning-teams
+                             */
+                            obj.text = false
+                            return obj
+                            // Remove previous lines once supported
+                            obj.text = obj.name
+                            obj.imgSrc = obj.avatarUrl || imgPlaceholder
+                            return obj
+                        })
+
+                        const assignes = [
+                            { text: 'PEOPLE', children: members.filter(obj => obj.text) },
+                            { text: 'TEAMS (not currently supported via API)', children: groups.filter(obj => obj.text) },
+                        ]
+
+                        renderAssignees(assignes)
+                        window.CLICKUP_LOADED_ASSIGNES = assignes
+                    })
+                }
+            }
+
+            /**
+             * Select2 Tags
+             */
+            {
+                const renderTags = data => {
+                    const tagRenderer = state => {
+                        if (!state.id) return state.text
+                        return $(`<span
+                            class="label"
+                            style="color: white; background: ${state.bgColor}; border-radius: 15px; font-weight: 600;"
+                        >${state.name}</span>`);
+                    }
+
+                    $tagsHandler.select2({
+                        placeholder: 'Select Tags',
+                        data,
+                        templateResult: tagRenderer,
+                        templateSelection: tagRenderer
+                    });
+                }
+
+                if (window.CLICKUP_LOADED_TAGS) {
+                    renderTags(window.CLICKUP_LOADED_TAGS)
+                } else {
+                    // Loading and caching tags
+                    API.tags().then(results => {
+                        const tags = results.map(obj => {
+                            obj.id = obj.name
+                            obj.text = obj.name
+                            return obj
+                        })
+
+                        renderTags(tags)
+                        window.CLICKUP_LOADED_TAGS = tags
+                    })
+                }
+            }
+
             $tabNew.on('click', () => {
                 $tabLink.removeClass('active')
                 $tabNew.addClass('active')

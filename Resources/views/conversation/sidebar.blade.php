@@ -26,6 +26,7 @@
                             data-trigger="modal"
                             data-modal-title="{{ __("Link ClickUp Tasks") }}"
                             data-modal-no-footer="true"
+                            data-modal-size="lg"
                             data-modal-on-show="initializeModalJS"
                             role="button"
                         >

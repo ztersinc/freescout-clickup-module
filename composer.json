@@ -23,6 +23,7 @@
         }
     },
     "require": {
-        "edsol/php-clickup-api-client": "dev-main"
+        "edsol/php-clickup-api-client": "dev-main",
+        "league/html-to-markdown": "^5.1"
     }
 }

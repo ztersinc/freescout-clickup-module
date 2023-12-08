@@ -1,6 +1,7 @@
 <?php
 
 namespace Modules\ClickupIntegration\Providers;
+require_once __DIR__.'/../vendor/autoload.php';
 
 use Illuminate\Support\ServiceProvider;
 use Modules\ClickupIntegration\Providers\Traits\IntegrationFields;
