@@ -82,6 +82,7 @@ class ClickupService
             $teamId = Provider::getTeamId();
 
             $data = $this->client->get("team/{$teamId}/task", [
+                'include_closed' => true,
                 'custom_fields' => json_encode([
                     [
                         'field_id'  => Provider::getFreescoutIdFID(),
