@@ -1,5 +1,4 @@
 # freescout-clickup-module
----
 
 ## Summary
 
@@ -14,9 +13,9 @@ This implementation works in stateless mode, meaning it doesn't store ClickUp re
 
 ## Setup
 
-1. Fork this repo and clone it inside your FreeScout **Modules** directory.
+1. Clone repository inside your FreeScout **Modules** directory.
 
-2. On FreeScout, enable the Module at **Manage** -> **Modules**
+2. In FreeScout, enable the Module at **Manage** -> **Modules**
 
 ![Module Activate](./Public/img/readme/module-activated.png)
 
@@ -82,7 +81,7 @@ Current module implementation requires that you create **4 Custom Fields** at th
 **Preview**:
 ![Custom Fields](./Public/img/readme/module-settings-custom-fields-configuration.png)
 
-### Usage
+## Usage
 
 Once you access to a new Mail Conversation you will see a side-bar container with the ClickUp Tasks that have been linked, these tasks can also be unlinked if needed.
 
@@ -112,7 +111,7 @@ You can specify any Task full URL or only its Id/Custom Id when linking.
 
 ![Link Task](./Public/img/readme/freescout-task.png)
 
-### Limitations
+## Limitations
 
 * Current implementation aims to add new Tasks to only 1 specific List
   * In ClickUp you can have your Tasks in 1 single List and create your own rules to route them anywhere in your Spaces
@@ -122,6 +121,6 @@ You can specify any Task full URL or only its Id/Custom Id when linking.
   * You can only set Assignees as People and not Teams when creating Tasks
     * Public Request: [API call for assigning Teams](https://clickup.canny.io/public-api/p/api-call-for-assigning-teams)
 
-### TODOS
+## TODO
 
 - [ ] Add conversation attachments when adding a new Task

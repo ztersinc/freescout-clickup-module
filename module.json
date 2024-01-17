@@ -4,7 +4,7 @@
     "img": "/modules/clickupintegration/img/clickup-logo.png",
     "description": "Connect FreeScout to ClickUp!",
     "version": "1.0.0",
-    "detailsUrl": "",
+    "detailsUrl": "https://github.com/ztersinc/freescout-clickup-module",
     "author": "Zters, Inc",
     "authorUrl": "https://www.zters.com/",
     "requiredAppVersion": "1.0.2",
