@@ -6,6 +6,7 @@ return [
         'environments' => [
             'dev'   => 'Development',
             'uat'   => 'UAT',
+            'qa'    => 'QA',
             'prod'  => 'Production'
         ],
     ]

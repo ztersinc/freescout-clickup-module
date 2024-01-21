@@ -71,7 +71,7 @@
             </select>
             <div class="form-help">
                 The environment will be used to prefix the "FreeScout ID" custom field in a ClickUp task. <br/>
-                Example: (fs-dev-1, fs-uat-1, fs-prod-1)
+                Example: (fs-dev-1, fs-uat-1, fs-qa-1, fs-prod-1)
             </div>
             @include('partials/field_error', ['field'=>'settings[clickupintegration.environment]'])
         </div>
